@@ -1,4 +1,5 @@
-// VARIOS PRODUTORES e 1 CONSUMIDOR
+// Produtores × Consumidores
+// Versão com vários produtores e 1 consumidor
 
 #include "util.h"
 #include <semaphore.h>
