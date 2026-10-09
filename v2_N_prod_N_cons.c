@@ -45,7 +45,6 @@ static void *consumidor(void *p) {
 
     for (;;) { // faz loop até consumir todos itens 
         sem_wait(&mutex_cont); // reserva um item
-        
         if (reservados >= n_prod * itens) {
             sem_post(&mutex_cont); // libera mutex
             break; 

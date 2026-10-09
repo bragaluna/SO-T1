@@ -71,10 +71,9 @@ int main(int argc, char **argv) {
     pmin   = arg(argc, argv, 5, 100); pmax   = arg(argc, argv, 6, 600);
     cmin   = arg(argc, argv, 7, 300); cmax   = arg(argc, argv, 8, 900);
     janela = arg(argc, argv, 9, 20);
-    
-    if (n_prod < 1 || n_prod > 999 || n_cons < 1 || tam < 1 || itens < 1 || itens > 999 ||
-        pmin > pmax || cmin > cmax) {
-        printf("Parametros invalidos (n_prod e itens entre 1 e 999, minimo <= maximo).\n");
+
+    if (n_prod < 1 || n_prod > 999 || n_cons < 1 || tam < 1 || itens < 1 || itens > 999 || pmin > pmax || cmin > cmax) {
+        printf("Parametros invalidos\n");
         return 1;
     }
 
@@ -89,7 +88,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < n_prod; i++) pthread_create(&tp[i], NULL, produtor, (void *)(size_t)(i + 1));
     for (int i = 0; i < n_prod; i++) pthread_join(tp[i], NULL);
     for (int i = 0; i < n_cons; i++) pthread_join(tc[i], NULL);
-
+    
     int restantes = 0;
     for (int i = 0; i < tam; i++) // cc itens que sobraram no buffer
         if (buffer[i] != VAZIO)
