@@ -48,7 +48,7 @@ static void *consumidor(void *p) {
         int valor = buffer[pos];
         if (valor == VAZIO) {
             leituras_vazias++;
-            log_msg("Consumidor %d: !!! ERRO posicao %d esta vazia (nao esperou um item)", id, pos);
+            log_msg("Consumidor %d: posicao %d esta vazia, nao esperou um item (errado)", id, pos);
         } else {
             buffer[pos] = VAZIO;
         }
@@ -71,6 +71,7 @@ int main(int argc, char **argv) {
     pmin   = arg(argc, argv, 5, 100); pmax   = arg(argc, argv, 6, 600);
     cmin   = arg(argc, argv, 7, 300); cmax   = arg(argc, argv, 8, 900);
     janela = arg(argc, argv, 9, 20);
+    
     if (n_prod < 1 || n_prod > 999 || n_cons < 1 || tam < 1 || itens < 1 || itens > 999 ||
         pmin > pmax || cmin > cmax) {
         printf("Parametros invalidos (n_prod e itens entre 1 e 999, minimo <= maximo).\n");
@@ -100,6 +101,8 @@ int main(int argc, char **argv) {
     printf("Itens restantes no buffer: %d\n", restantes);
     printf("Contador ocupado final: %d (deveria ser 0)\n", ocupados);
 
-    free((void *)buffer); free(tp); free(tc);
+    free((void *)buffer);
+    free(tp); 
+    free(tc);
     return 0;
 }
