@@ -43,9 +43,13 @@ static void *consumidor(void *p) {
     int id = (int)(size_t)p;
     semear(id, 2);
 
-    for (;;) {
+    for (;;) { // faz loop até consumir todos itens 
         sem_wait(&mutex_cont); // reserva um item
-        if (reservados >= n_prod * itens) { sem_post(&mutex_cont); break; }
+        
+        if (reservados >= n_prod * itens) {
+            sem_post(&mutex_cont); // libera mutex
+            break; 
+        }
         reservados++;
         sem_post(&mutex_cont);
 
@@ -54,6 +58,7 @@ static void *consumidor(void *p) {
             sem_wait(&cheias);                    
         }
         sem_wait(&mutex);                       
+        
         int valor = buffer[out];
         buffer[out] = VAZIO;
         out = (out + 1) % tam;
@@ -62,22 +67,21 @@ static void *consumidor(void *p) {
         mostrar_buffer(buffer, tam, ocupados);
         sem_post(&mutex);                        
         sem_post(&vazias);                     
-
         log_msg("Consumidor %d consumindo item %d", id, valor);
         dormir_ms(atraso(cmin, cmax));
     }
     return NULL;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) { // permite alterar os valores direto no terminal, a inves de varios inputs
     
     n_prod = arg(argc, argv, 1, 3);   n_cons = arg(argc, argv, 2, 2);
     tam    = arg(argc, argv, 3, 5);   itens  = arg(argc, argv, 4, 6);
-    pmin   = arg(argc, argv, 5, 100); pmax   = arg(argc, argv, 6, 600);
-    cmin   = arg(argc, argv, 7, 300); cmax   = arg(argc, argv, 8, 900);
+    pmin   = arg(argc, argv, 5, 100); pmax   = arg(argc, argv, 6, 600);  // P: garante que as velocidades da producao variem
+    cmin   = arg(argc, argv, 7, 300); cmax   = arg(argc, argv, 8, 900);  // C: garante que as velocidades do consumo variem
    
     if (n_prod < 1 || n_prod > 999 || n_cons < 1 || tam < 1 || itens < 1 || itens > 999 || pmin > pmax || cmin > cmax) {
-        printf("Parametros invalidos (n_prod e itens entre 1 e 999, minimo <= maximo).\n");
+        printf("Parametros invalidos (n_prod e itens entre 1 e 999, minimo <= maximo).\n"); // P nao produz mais rapido que C consome, e vice versa (perda de itens)
         return 1;
     }
 
@@ -90,8 +94,9 @@ int main(int argc, char **argv) {
 
     printf("Versão 2: %d produtores x %d consumidores | buffer = %d | %d itens por produtor\n\n", n_prod, n_cons, tam, itens);
 
-    pthread_t *tp = malloc(sizeof(pthread_t) * n_prod);
-    pthread_t *tc = malloc(sizeof(pthread_t) * n_cons);
+    pthread_t *tp = malloc(sizeof(pthread_t) * n_prod); // threads P 
+    pthread_t *tc = malloc(sizeof(pthread_t) * n_cons); // threads C 
+
     for (int i=0; i<n_cons; i++) pthread_create(&tc[i], NULL, consumidor, (void *)(size_t)(i + 1));
     for (int i=0; i<n_prod; i++) pthread_create(&tp[i], NULL, produtor, (void *)(size_t)(i + 1));
     for (int i=0; i<n_prod; i++) pthread_join(tp[i], NULL);
