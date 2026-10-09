@@ -1,5 +1,4 @@
 //VARIOS PRODUTORES e VARIOS CONSUMIDORES
-//Compilar: gcc v2_varios_prod_varios_cons.c -o v2_varios_prod_varios_cons -pthread
 
 #include "util.h"
 #include <semaphore.h>
