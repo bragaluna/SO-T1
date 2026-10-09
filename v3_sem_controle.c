@@ -20,7 +20,7 @@ static void *produtor(void *p) {
         dormir_ms(janela);                
         if (buffer[pos] != VAZIO) {
             sobrescritas++;
-            log_msg("Produtor %d: !!! ERRO posicao %d ja tem o item %d -> sera sobrescrito (perdido)",id, pos, buffer[pos]);
+            log_msg("Produtor %d: posicao %d ja tem o item %d, sera sobrescrito (perdido)",id, pos, buffer[pos]);
         }
 
         buffer[pos] = valor;
