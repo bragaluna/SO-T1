@@ -1,4 +1,5 @@
-//SEM CONTROLE DE CONCORRENCIA (Modo vida loka)
+// Produtores × Consumidores
+// Versão sem controle de concorrência (Modo vida loka)
 
 #include "util.h"
 
