@@ -1,5 +1,4 @@
-//SEM CONTROLE DE CONCORRENCIA 
-//Compilar: gcc v3_sem_controle.c -o v3_sem_controle -pthread
+//SEM CONTROLE DE CONCORRENCIA (Modo vida loka)
 
 #include "util.h"
 
@@ -23,7 +22,7 @@ static void *produtor(void *p) {
             sobrescritas++;
             log_msg("Produtor %d: !!! ERRO posicao %d ja tem o item %d -> sera sobrescrito (perdido)",id, pos, buffer[pos]);
         }
-        
+
         buffer[pos] = valor;
         in = (pos + 1) % tam;
         int tmp = ocupados;             
